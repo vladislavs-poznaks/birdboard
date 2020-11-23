@@ -2,17 +2,20 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\Models\Project;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ProjectTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    use RefreshDatabase;
+
+    /** @test */
+    public function a_project_belongs_to_a_user()
     {
-        $this->assertTrue(true);
+        $project = Project::factory()->create();
+
+        $this->assertInstanceOf(User::class, $project->owner);
     }
 }

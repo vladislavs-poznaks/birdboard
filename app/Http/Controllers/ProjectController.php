@@ -17,6 +17,8 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+        abort_unless(auth()->user()->is($project->owner), 403);
+
         return view('projects.show', [
             'project' => $project
         ]);
