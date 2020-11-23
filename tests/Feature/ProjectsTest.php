@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -12,28 +13,47 @@ class ProjectsTest extends TestCase
     use WithFaker, RefreshDatabase;
 
     /** @test */
+    public function only_authenticated_users_can_create_a_project()
+    {
+        $attributes = Project::factory()
+            ->raw();
+
+        $this->post('/projects', $attributes)->assertRedirect('/login');
+    }
+
+    /** @test */
     public function a_user_can_create_a_project()
     {
-        $this->withoutExceptionHandling();
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-        $attributes = [
-            'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph
-        ];
+        $project = Project::factory()->make([
+            'owner_id' => $user->id
+        ]);
 
-        $this->post('/projects', $attributes)->assertRedirect('/projects');
+        $this->post('/projects', [
+            'title' => $project->title,
+            'description' => $project->description
+        ])->assertRedirect('/projects');
 
-        $this->assertDatabaseHas('projects', $attributes);
+        $this->assertDatabaseHas('projects', [
+            'owner_id' => $user->id,
+            'title' => $project->title,
+            'description' => $project->description
+        ]);
 
-        $this->get('/projects')->assertSee($attributes['title']);
+        $this->get('/projects')->assertSee($project->title);
     }
 
     /** @test */
     public function a_user_can_view_a_project()
     {
-        $this->withoutExceptionHandling();
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-        $project = Project::factory()->create();
+        $project = Project::factory()->create([
+            'owner_id' => $user->id
+        ]);
 
         $this->get(route('projects.show', $project))
             ->assertStatus(200)
@@ -45,18 +65,32 @@ class ProjectsTest extends TestCase
     /** @test */
     public function a_project_requires_a_title()
     {
-        $attributes = Project::factory()
-            ->raw(['title' => '']);
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-        $this->post('/projects', $attributes)->assertSessionHasErrors('title');
+        $project = Project::factory()->create([
+            'owner_id' => $user->id
+        ]);
+
+        $this->post('/projects', [
+            'title' => '',
+            'description' => $project->description
+        ])->assertSessionHasErrors('title');
     }
 
     /** @test */
     public function a_project_requires_a_description()
     {
-        $attributes = Project::factory()
-            ->raw(['description' => '']);
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-        $this->post('/projects', $attributes)->assertSessionHasErrors('description');
+        $project = Project::factory()->create([
+            'owner_id' => $user->id
+        ]);
+
+        $this->post('/projects', [
+            'title' => $project->title,
+            'description' => ''
+        ])->assertSessionHasErrors('description');
     }
 }
