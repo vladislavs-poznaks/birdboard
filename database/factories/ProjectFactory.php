@@ -24,7 +24,7 @@ class ProjectFactory extends Factory
     {
         return [
             'owner_id' => User::factory(),
-            'title' => $this->faker->sentence,
+            'title' => $this->faker->words($count = 3, $asText = true),
             'description' => $this->faker->paragraph
         ];
     }
