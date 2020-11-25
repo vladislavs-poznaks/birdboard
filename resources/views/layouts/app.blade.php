@@ -24,14 +24,14 @@
     <div class="flex items-center justify-between px-10 py-4">
         <div class="mb-4 md:mb-0">
             <a href="{{ route('projects.index') }}">
-                <img src="images/logo.svg" alt="logo">
+                <img src="/images/logo.svg" alt="logo">
             </a>
 
         </div>
         <div class="flex space-x-3 items-center">
 
             <img
-                src="images/avatar.jpeg"
+                src="/images/avatar.jpeg"
                 alt="avatar"
                 class="w-12 rounded-full"
             >
