@@ -41,14 +41,14 @@
             <div class="flex">
                 <div class="w-2/3 pr-10">
                     <div class="space-y-5 mb-6">
-                        @forelse(range(1, 4) as $v)
+                        @forelse($project->tasks as $task)
                             <div class="flex items-center justify-between bg-white rounded-lg shadow-lg py-3">
                                 <div class="border-l-8 border-blue-300 text-lg py-1">
                                     <a
                                         href="#"
                                         class="hover:underline"
                                     >
-                                        <h3 class="text-xl ml-3">Task name</h3>
+                                        <h3 class="text-xl ml-3">{{ $task->body }}</h3>
                                     </a>
                                 </div>
 
@@ -73,9 +73,9 @@
                     </div>
 
                     <h2 class="text-lg text-gray-400 mb-3">General notes</h2>
-                    <div class="h-40 shadow-lg bg-white rounded-lg px-3 py-3">
-                        general notes
-                    </div>
+                    <textarea
+                        class="h-40 w-full shadow-lg bg-white rounded-lg px-3 py-3"
+                    >general notes</textarea>
                 </div>
 
                 <div class="w-1/3">

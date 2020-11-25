@@ -16,8 +16,6 @@ class ManageProjectsTest extends TestCase
     public function guests_can_not_control_projects()
     {
         $project = Project::factory()->create();
-//        $attributes = Project::factory()
-//            ->raw();
 
         $this->post('/projects', $project->toArray())->assertRedirect('/login');
 
@@ -33,13 +31,12 @@ class ManageProjectsTest extends TestCase
     /** @test */
     public function a_user_can_create_a_project()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->signIn();
 
         $this->get('/projects/create')->assertStatus(200);
 
         $project = Project::factory()->make([
-            'owner_id' => $user->id
+            'owner_id' => auth()->id()
         ]);
 
         $this->post('/projects', [
@@ -48,7 +45,7 @@ class ManageProjectsTest extends TestCase
         ])->assertRedirect('/projects');
 
         $this->assertDatabaseHas('projects', [
-            'owner_id' => $user->id,
+            'owner_id' => auth()->id(),
             'title' => $project->title,
             'description' => $project->description
         ]);
@@ -59,25 +56,22 @@ class ManageProjectsTest extends TestCase
     /** @test */
     public function a_user_can_view_a_project()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->signIn();
 
         $project = Project::factory()->create([
-            'owner_id' => $user->id
+            'owner_id' => auth()->id()
         ]);
 
         $this->get(route('projects.show', $project))
             ->assertStatus(200)
-            ->assertSee($project->title)
-            ->assertSee($project->description);
+            ->assertSee($project->title);
 
     }
 
     /** @test */
     public function authenticated_user_can_not_view_a_project_of_others()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->signIn();
 
         $project = Project::factory()->create();
 
@@ -91,11 +85,10 @@ class ManageProjectsTest extends TestCase
     /** @test */
     public function a_project_requires_a_title()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->signIn();
 
         $project = Project::factory()->create([
-            'owner_id' => $user->id
+            'owner_id' => auth()->id()
         ]);
 
         $this->post('/projects', [
@@ -107,11 +100,10 @@ class ManageProjectsTest extends TestCase
     /** @test */
     public function a_project_requires_a_description()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->signIn();
 
         $project = Project::factory()->create([
-            'owner_id' => $user->id
+            'owner_id' => auth()->id()
         ]);
 
         $this->post('/projects', [
