@@ -9,6 +9,8 @@ class ProjectTaskController extends Controller
 {
     public function store(TaskStoreRequest $request, Project $project)
     {
+        abort_unless(auth()->user()->is($project->owner), 403);
+
         $project->tasks()->create($request->all());
 
         return redirect(route('projects.show', [

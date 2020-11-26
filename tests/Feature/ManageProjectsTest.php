@@ -35,22 +35,17 @@ class ManageProjectsTest extends TestCase
 
         $this->get('/projects/create')->assertStatus(200);
 
-        $project = Project::factory()->make([
-            'owner_id' => auth()->id()
-        ]);
-
         $this->post('/projects', [
-            'title' => $project->title,
-            'description' => $project->description
-        ])->assertRedirect('/projects');
+            'title' => 'Test Title',
+            'description' => 'Test Description'
+        ])->assertRedirect(route('projects.show', Project::first()));
 
         $this->assertDatabaseHas('projects', [
-            'owner_id' => auth()->id(),
-            'title' => $project->title,
-            'description' => $project->description
+            'title' => 'Test Title',
+            'description' => 'Test Description'
         ]);
 
-        $this->get('/projects')->assertSee($project->title);
+        $this->get('/projects')->assertSee('Test Title');
     }
 
     /** @test */

@@ -6,7 +6,14 @@
         <div class="w-full lg:w-3/4 px-10 py-6">
             <div class="flex items-center justify-between py-4 mb-4">
                 <div class="flex items-center space-x-5">
-                    <h2 class="text-xl text-gray-400" >My Projects/Project</h2>
+                    <h2 class="text-xl text-gray-400">
+                        <a
+                            href="{{ route('projects.index') }}"
+                            class="hover:underline"
+                        >My Projects</a>
+                        /
+                        {{ $project->title  }}
+                    </h2>
                     <a
                         href="{{ route('projects.create') }}"
                         class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
@@ -36,20 +43,36 @@
 
             </div> {{-- End header --}}
 
-            <h2 class="text-lg text-gray-400 mb-3" >My Tasks</h2>
+            <h2 class="text-lg text-gray-400 mb-3">My Tasks</h2>
 
             <div class="flex">
                 <div class="w-2/3 pr-10">
                     <div class="space-y-5 mb-6">
-                        @forelse($project->tasks as $task)
+                        <div class="flex items-center justify-between bg-white rounded-lg shadow-lg py-3">
+                            <form
+                                action="{{ route('tasks.store', $project) }}"
+                                method="POST"
+                                class="w-full flex justify-between px-3"
+                            >
+                                @csrf
+                                <input
+                                    type="text"
+                                    name="body"
+                                    placeholder="Add a task ..."
+                                    class="w-full rounded-lg py-1 px-3"
+                                >
+                                <button
+                                    type="submit"
+                                    class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
+                                >
+                                    Add
+                                </button>
+                            </form>
+                        </div>
+                        @foreach($project->tasks as $task)
                             <div class="flex items-center justify-between bg-white rounded-lg shadow-lg py-3">
                                 <div class="border-l-8 border-blue-300 text-lg py-1">
-                                    <a
-                                        href="#"
-                                        class="hover:underline"
-                                    >
-                                        <h3 class="text-xl ml-3">{{ $task->body }}</h3>
-                                    </a>
+                                    <h3 class="text-xl ml-3">{{ $task->body }}</h3>
                                 </div>
 
                                 <div class="flex items-center space-x-6 mr-6">
@@ -60,16 +83,12 @@
                                         due date
                                     </div>
                                     <div>
-                                       check
+                                        check
                                     </div>
                                 </div>
 
                             </div>
-                        @empty
-                            <div>
-                                No tasks yet...
-                            </div>
-                        @endforelse
+                        @endforeach
                     </div>
 
                     <h2 class="text-lg text-gray-400 mb-3">General notes</h2>
@@ -79,7 +98,7 @@
                 </div>
 
                 <div class="w-1/3">
-                    <x-project-card :project="$project" />
+                    <x-project-card :project="$project"/>
                 </div>
             </div>
 
