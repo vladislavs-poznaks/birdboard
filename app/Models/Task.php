@@ -10,7 +10,11 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = [
-        'body'
+        'body', 'completed'
+    ];
+
+    protected $casts = [
+        'completed' => 'boolean'
     ];
 
     public function project()

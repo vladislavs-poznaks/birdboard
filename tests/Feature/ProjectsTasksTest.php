@@ -39,6 +39,23 @@ class ProjectsTasksTest extends TestCase
     }
 
     /** @test */
+    public function only_the_owner_of_a_project_can_update_a_task()
+    {
+        $this->signIn();
+
+        $project = Project::factory()->create();
+        $task = Task::factory()->create([
+            'project_id' => $project->id
+        ]);
+
+        $this->put(route('tasks.update', [$project, $task]), [
+            'body' => 'Changed task',
+            'completed' => true
+        ])
+            ->assertStatus(403);
+    }
+
+    /** @test */
     public function a_project_can_have_tasks()
     {
         $this->signIn();
@@ -52,6 +69,34 @@ class ProjectsTasksTest extends TestCase
         ])
             ->assertRedirect(route('projects.show', $project));
 
+    }
+
+    /** @test */
+    public function a_project_task_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->signIn();
+
+        $project = Project::factory()->create([
+            'owner_id' => auth()->id()
+        ]);
+
+        $task = Task::factory()->create([
+            'project_id' => $project->id
+        ]);
+
+        $this->put(route('tasks.update', [$project, $task]), [
+            'body' => 'Changed task',
+            'completed' => true
+        ])
+            ->assertRedirect(route('projects.show', $project));
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $task->id,
+            'body' => 'Changed task',
+            'completed' => true
+        ]);
     }
 
     /** @test */

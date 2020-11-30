@@ -70,23 +70,21 @@
                             </form>
                         </div>
                         @foreach($project->tasks as $task)
-                            <div class="flex items-center justify-between bg-white rounded-lg shadow-lg py-3">
-                                <div class="border-l-8 border-blue-300 text-lg py-1">
-                                    <h3 class="text-xl ml-3">{{ $task->body }}</h3>
-                                </div>
-
-                                <div class="flex items-center space-x-6 mr-6">
-                                    <div>
-                                        bin
-                                    </div>
-                                    <div>
-                                        due date
-                                    </div>
-                                    <div>
-                                        check
-                                    </div>
-                                </div>
-
+                            <div class="bg-white rounded-lg shadow-lg py-3 px-3">
+                                <form
+                                    action="{{ route('tasks.update', [$project, $task]) }}"
+                                    method="POST"
+                                    class="flex justify-between items-center text-xl"
+                                >
+                                    @method('PUT')
+                                    @csrf
+                                    <input type="text" name="body" value="{{ $task->body }}" class="w-full">
+                                    <input
+                                        type="checkbox"
+                                        name="completed"
+                                        onchange="this.form.submit()"
+                                    >
+                                </form>
                             </div>
                         @endforeach
                     </div>
