@@ -37,15 +37,40 @@ class ManageProjectsTest extends TestCase
 
         $this->post('/projects', [
             'title' => 'Test Title',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
+            'notes' => 'General notes here.'
         ])->assertRedirect(route('projects.show', Project::first()));
 
         $this->assertDatabaseHas('projects', [
             'title' => 'Test Title',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
+            'notes' => 'General notes here.'
         ]);
 
-        $this->get('/projects')->assertSee('Test Title');
+        $this->get(route('projects.show', Project::first()))
+            ->assertSee('Test Title')
+            ->assertSee('General notes here.');
+    }
+
+    /** @test */
+    public function a_user_can_update_a_project()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->signIn();
+
+        $project = Project::factory()->create([
+            'owner_id' => auth()->id()
+        ]);
+
+        $this->put(route('projects.update', $project), [
+            'notes' => 'Changed notes here.'
+        ])->assertRedirect(route('projects.show', $project));
+
+        $this->assertDatabaseHas('projects', [
+           'id' => $project->id,
+           'notes' => 'Changed notes here.'
+        ]);
     }
 
     /** @test */
@@ -74,6 +99,25 @@ class ManageProjectsTest extends TestCase
             ->assertStatus(403)
             ->assertDontSee($project->title)
             ->assertDontSee($project->description);
+
+    }
+
+    /** @test */
+    public function authenticated_user_can_not_update_a_project_of_others()
+    {
+        $this->signIn();
+
+        $project = Project::factory()->create();
+
+        $this->put(route('projects.update', $project), [
+            'notes' => 'Changed notes here...'
+        ])
+            ->assertStatus(403);
+
+        $this->assertDatabaseMissing('projects', [
+            'id' => $project->id,
+            'notes' => 'Changed notes here...'
+        ]);
 
     }
 

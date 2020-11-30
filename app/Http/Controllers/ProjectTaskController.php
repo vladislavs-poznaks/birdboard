@@ -11,7 +11,7 @@ class ProjectTaskController extends Controller
 {
     public function store(TaskStoreRequest $request, Project $project)
     {
-        abort_unless(auth()->user()->is($project->owner), 403);
+        $this->authorize('update', $project);
 
         $project->tasks()->create($request->all());
 
@@ -22,7 +22,7 @@ class ProjectTaskController extends Controller
 
     public function update(TaskUpdateRequest $request, Project $project, Task $task)
     {
-        abort_unless(auth()->user()->is($project->owner), 403);
+        $this->authorize('update', $task->project);
 
         $task->update($request->all());
 

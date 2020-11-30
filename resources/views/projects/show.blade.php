@@ -90,9 +90,20 @@
                     </div>
 
                     <h2 class="text-lg text-gray-400 mb-3">General notes</h2>
+                    <form action="{{ route('projects.update', $project) }}" method="POST">
+                        @csrf
+                        @method('PUT')
                     <textarea
+                        name="notes"
                         class="h-40 w-full shadow-lg bg-white rounded-lg px-3 py-3"
-                    >general notes</textarea>
+                        placeholder="Anything of note here?"
+                    >{{ $project->notes }}</textarea>
+                        <button
+                            type="submit"
+                            class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
+                        >Save changes</button>
+                    </form>
+
                 </div>
 
                 <div class="w-1/3">

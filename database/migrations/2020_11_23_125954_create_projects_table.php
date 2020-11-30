@@ -20,6 +20,7 @@ class CreateProjectsTable extends Migration
                 ->cascadeOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

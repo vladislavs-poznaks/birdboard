@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectStoreRequest;
+use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        abort_unless(auth()->user()->is($project->owner), 403);
+        $this->authorize('update', $project);
 
         return view('projects.show', [
             'project' => $project
@@ -33,8 +34,15 @@ class ProjectController extends Controller
     {
         $project = auth()->user()->projects()->create($request->all());
 
-        return redirect(route('projects.show', [
-            'project' => $project
-        ]));
+        return redirect(route('projects.show', $project));
+    }
+
+    public function update(ProjectUpdateRequest $request, Project $project)
+    {
+        $this->authorize('update', $project);
+
+        $project->update($request->all());
+
+        return redirect(route('projects.show', $project));
     }
 }
