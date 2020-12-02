@@ -3,11 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
-use App\Models\Task;
-use Database\Factories\TaskFactory;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Facades\Tests\Setup\ProjectFactory;
 use Tests\TestCase;
 
 class ProjectsTasksTest extends TestCase
@@ -43,12 +40,9 @@ class ProjectsTasksTest extends TestCase
     {
         $this->signIn();
 
-        $project = Project::factory()->create();
-        $task = Task::factory()->create([
-            'project_id' => $project->id
-        ]);
+        $project = ProjectFactory::withTasks(1)->create();
 
-        $this->put(route('tasks.update', [$project, $task]), [
+        $this->put(route('tasks.update', [$project, $project->tasks->first()]), [
             'body' => 'Changed task',
             'completed' => true
         ])
@@ -58,11 +52,8 @@ class ProjectsTasksTest extends TestCase
     /** @test */
     public function a_project_can_have_tasks()
     {
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
 
         $this->post(route('projects.show', $project) . '/tasks', [
             'body' => 'Test Body'
@@ -74,26 +65,18 @@ class ProjectsTasksTest extends TestCase
     /** @test */
     public function a_project_task_can_be_updated()
     {
-        $this->withoutExceptionHandling();
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
 
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
-
-        $task = Task::factory()->create([
-            'project_id' => $project->id
-        ]);
-
-        $this->put(route('tasks.update', [$project, $task]), [
+        $this->put(route('tasks.update', [$project, $project->tasks->first()]), [
             'body' => 'Changed task',
             'completed' => true
         ])
             ->assertRedirect(route('projects.show', $project));
 
         $this->assertDatabaseHas('tasks', [
-            'id' => $task->id,
+            'id' => $project->tasks->first()->id,
             'body' => 'Changed task',
             'completed' => true
         ]);
@@ -102,31 +85,23 @@ class ProjectsTasksTest extends TestCase
     /** @test */
     public function a_task_can_be_seen_on_project_page()
     {
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
-
-        $task = Task::factory()->create([
-            'project_id' => $project->id
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
 
         $this->get(route('projects.show', $project))
-            ->assertSee($task->body);
+            ->assertSee($project->tasks->first()->body);
     }
 
     /** @test */
     public function a_task_requires_a_body()
     {
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
 
         $this->post(route('tasks.store', $project), [
             'body' => '',
-        ])->assertSessionHasErrors('body');
+        ])
+            ->assertSessionHasErrors('body');
     }
 }

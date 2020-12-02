@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Project;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Facades\Tests\Setup\ProjectFactory;
 use Tests\TestCase;
 
 class ManageProjectsTest extends TestCase
@@ -39,7 +39,8 @@ class ManageProjectsTest extends TestCase
             'title' => 'Test Title',
             'description' => 'Test Description',
             'notes' => 'General notes here.'
-        ])->assertRedirect(route('projects.show', Project::first()));
+        ])
+            ->assertRedirect(route('projects.show', Project::first()));
 
         $this->assertDatabaseHas('projects', [
             'title' => 'Test Title',
@@ -55,32 +56,25 @@ class ManageProjectsTest extends TestCase
     /** @test */
     public function a_user_can_update_a_project()
     {
-        $this->withoutExceptionHandling();
-
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
 
         $this->put(route('projects.update', $project), [
             'notes' => 'Changed notes here.'
-        ])->assertRedirect(route('projects.show', $project));
+        ])
+            ->assertRedirect(route('projects.show', $project));
 
         $this->assertDatabaseHas('projects', [
-           'id' => $project->id,
-           'notes' => 'Changed notes here.'
+            'id' => $project->id,
+            'notes' => 'Changed notes here.'
         ]);
     }
 
     /** @test */
     public function a_user_can_view_a_project()
     {
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
 
         $this->get(route('projects.show', $project))
             ->assertStatus(200)
@@ -124,30 +118,26 @@ class ManageProjectsTest extends TestCase
     /** @test */
     public function a_project_requires_a_title()
     {
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
 
         $this->post('/projects', [
             'title' => '',
             'description' => $project->description
-        ])->assertSessionHasErrors('title');
+        ])
+            ->assertSessionHasErrors('title');
     }
 
     /** @test */
     public function a_project_requires_a_description()
     {
-        $this->signIn();
-
-        $project = Project::factory()->create([
-            'owner_id' => auth()->id()
-        ]);
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
 
         $this->post('/projects', [
             'title' => $project->title,
             'description' => ''
-        ])->assertSessionHasErrors('description');
+        ])
+            ->assertSessionHasErrors('description');
     }
 }
