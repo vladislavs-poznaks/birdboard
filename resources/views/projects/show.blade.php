@@ -97,15 +97,19 @@
                     <form action="{{ route('projects.update', $project) }}" method="POST">
                         @csrf
                         @method('PUT')
-                    <textarea
-                        name="notes"
-                        class="h-40 w-full shadow-lg bg-white rounded-lg px-3 py-3"
-                        placeholder="Anything of note here?"
-                    >{{ $project->notes }}</textarea>
+                        <textarea
+                            name="notes"
+                            class="h-40 w-full shadow-lg bg-white rounded-lg px-3 py-3"
+                            placeholder="Anything of note here?"
+                        >{{ $project->notes }}</textarea>
+                        @error('notes')
+                        <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
                         <button
                             type="submit"
                             class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
-                        >Save changes</button>
+                        >Save changes
+                        </button>
                     </form>
 
                 </div>

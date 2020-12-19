@@ -77,6 +77,25 @@ class ManageProjectsTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_update_just_projects_notes()
+    {
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
+
+        $this->get(route('projects.edit', $project))->assertStatus(200);
+
+        $this->put(route('projects.update', $project), [
+            'notes' => 'Changed notes here.'
+        ])
+            ->assertRedirect(route('projects.show', $project));
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'notes' => 'Changed notes here.'
+        ]);
+    }
+
+    /** @test */
     public function a_user_can_view_a_project()
     {
         $project = ProjectFactory::ownedBy($this->signIn())
