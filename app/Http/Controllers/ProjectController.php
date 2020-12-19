@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
-use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -35,6 +34,13 @@ class ProjectController extends Controller
         $project = auth()->user()->projects()->create($request->all());
 
         return redirect(route('projects.show', $project));
+    }
+
+    public function edit(Project $project)
+    {
+        return view('projects.edit', [
+            'project' => $project
+        ]);
     }
 
     public function update(ProjectUpdateRequest $request, Project $project)

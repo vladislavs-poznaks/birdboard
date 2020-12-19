@@ -18,6 +18,10 @@
                         href="{{ route('projects.create') }}"
                         class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
                     >Add Task</a>
+                    <a
+                        href="{{ route('projects.edit', $project) }}"
+                        class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
+                    >Edit Project</a>
                 </div>
                 <div class="flex items-center space-x-5">
                     <img

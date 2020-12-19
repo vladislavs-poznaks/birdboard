@@ -59,13 +59,19 @@ class ManageProjectsTest extends TestCase
         $project = ProjectFactory::ownedBy($this->signIn())
             ->create();
 
+        $this->get(route('projects.edit', $project))->assertStatus(200);
+
         $this->put(route('projects.update', $project), [
+            'title' => 'Changed title here.',
+            'description' => 'Changed description here.',
             'notes' => 'Changed notes here.'
         ])
             ->assertRedirect(route('projects.show', $project));
 
         $this->assertDatabaseHas('projects', [
             'id' => $project->id,
+            'title' => 'Changed title here.',
+            'description' => 'Changed description here.',
             'notes' => 'Changed notes here.'
         ]);
     }
@@ -104,12 +110,14 @@ class ManageProjectsTest extends TestCase
         $project = Project::factory()->create();
 
         $this->put(route('projects.update', $project), [
+            'title' => 'Changed title',
             'notes' => 'Changed notes here...'
         ])
             ->assertStatus(403);
 
         $this->assertDatabaseMissing('projects', [
             'id' => $project->id,
+            'title' => 'Changed title',
             'notes' => 'Changed notes here...'
         ]);
 
