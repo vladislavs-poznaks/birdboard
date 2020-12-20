@@ -26,6 +26,13 @@ class Project extends Model
         return Str::limit($this->description);
     }
 
+    public function recordActivity($description)
+    {
+        $this->activity()->create([
+            'description' => $description
+        ]);
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id' );
