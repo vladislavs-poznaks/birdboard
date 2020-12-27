@@ -82,10 +82,11 @@
                                 >
                                     @method('PUT')
                                     @csrf
-                                    <input type="text" name="body" value="{{ $task->body }}" class="w-full">
+                                    <input type="text" name="body" value="{{ $task->body }}" class="w-full {{ $task->completed ? 'text-gray-400' : '' }}">
                                     <input
                                         type="checkbox"
                                         name="completed"
+                                        {{ $task->completed ? 'checked' : '' }}
                                         onchange="this.form.submit()"
                                     >
                                 </form>
@@ -121,9 +122,7 @@
 
         </div>
 
-        <div class="w-full lg:w-1/4 bg-gray-200 pl-4 pr-10 py-6 h-screen">
-            Latest Updates
-        </div>
+        @include('projects.activity.feed')
 
     </div>
 @endsection

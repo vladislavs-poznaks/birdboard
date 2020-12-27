@@ -23,6 +23,7 @@ class ProjectTaskController extends Controller
 
     public function update(TaskUpdateRequest $request, Project $project, Task $task)
     {
+//        dd($request);
         $this->authorize('update', $task->project);
 
         $task->update($request->except('completed'));

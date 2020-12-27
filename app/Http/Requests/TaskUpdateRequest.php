@@ -25,7 +25,6 @@ class TaskUpdateRequest extends FormRequest
     {
         return [
             'body' => 'string|max:255',
-            'completed' => 'boolean'
         ];
     }
 }
