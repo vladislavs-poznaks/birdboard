@@ -71,14 +71,53 @@ class ProjectsTasksTest extends TestCase
 
         $this->put(route('tasks.update', [$project, $project->tasks->first()]), [
             'body' => 'Changed task',
-            'completed' => true
         ])
             ->assertRedirect(route('projects.show', $project));
 
         $this->assertDatabaseHas('tasks', [
             'id' => $project->tasks->first()->id,
             'body' => 'Changed task',
+        ]);
+    }
+
+    /** @test */
+    public function a_project_task_can_be_completed()
+    {
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
+
+        $this->put(route('tasks.update', [$project, $project->tasks->first()]), [
             'completed' => true
+        ])
+            ->assertRedirect(route('projects.show', $project));
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $project->tasks->first()->id,
+            'completed' => true
+        ]);
+    }
+
+    /** @test */
+    public function a_project_task_can_be_marked_as_incomplete()
+    {
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->withTasks(1)
+            ->create();
+
+        $this->put(route('tasks.update', [$project, $project->tasks->first()]), [
+            'completed' => true
+        ])
+            ->assertRedirect(route('projects.show', $project));
+
+        $this->put(route('tasks.update', [$project, $project->tasks->first()]), [
+            'completed' => false
+        ])
+            ->assertRedirect(route('projects.show', $project));
+
+        $this->assertDatabaseHas('tasks', [
+            'id' => $project->tasks->first()->id,
+            'completed' => false
         ]);
     }
 
