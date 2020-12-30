@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -21,6 +22,8 @@ class Project extends Model
         'notes'
     ];
 
+    public $old = [];
+
     public function getExcerptAttribute()
     {
         return Str::limit($this->description);
@@ -29,8 +32,19 @@ class Project extends Model
     public function recordActivity($description)
     {
         $this->activity()->create([
-            'description' => $description
+            'description' => $description,
+            'changes' => $this->activityChanges($description),
         ]);
+    }
+
+    public function activityChanges($description)
+    {
+        if ($description === 'updated') {
+            return [
+                'before' => Arr::except(array_diff($this->old, $this->getAttributes()), 'updated_at'),
+                'after' => Arr::except(array_diff($this->getAttributes(), $this->old), 'updated_at'),
+            ];
+        }
     }
 
     public function owner()

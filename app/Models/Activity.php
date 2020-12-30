@@ -10,7 +10,11 @@ class Activity extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_id', 'description', 'subject_id', 'subject_type'
+        'project_id', 'description', 'subject_id', 'subject_type', 'changes'
+    ];
+
+    protected $casts = [
+        'changes' => 'array'
     ];
 
     public function subject()
