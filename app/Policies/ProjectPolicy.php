@@ -22,7 +22,7 @@ class ProjectPolicy
 
     public function update(User $user, Project $project)
     {
-        return $project->owner->is($user);
+        return $project->owner->is($user) || $project->members->contains($user);
     }
 
     public function destroy(User $user, Project $project)
