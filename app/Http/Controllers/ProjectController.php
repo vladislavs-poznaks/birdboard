@@ -10,8 +10,10 @@ class ProjectController extends Controller
 {
     public function index()
     {
+        $projects = auth()->user()->projects->merge(auth()->user()->sharedProjects);
+
         return view('projects.index', [
-            'projects' =>  auth()->user()->projects
+            'projects' => $projects
         ]);
     }
 
