@@ -77,6 +77,52 @@ class ManageProjectsTest extends TestCase
     }
 
     /** @test */
+    public function guests_cannot_delete_a_project()
+    {
+        $project = Project::factory()->create();
+
+        $this->delete(route('projects.destroy', $project))
+            ->assertRedirect(route('login'));
+
+        $this->assertDatabaseHas('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_cannot_delete_a_project_of_others()
+    {
+        $project = Project::factory()->create();
+
+        $this->actingAs($this->signIn())->delete(route('projects.destroy', $project))
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
+        ]);
+    }
+
+    /** @test */
+    public function a_user_can_delete_a_project()
+    {
+        $project = ProjectFactory::ownedBy($this->signIn())
+            ->create();
+
+        $this->get(route('projects.edit', $project))
+            ->assertStatus(200);
+
+        $this->delete(route('projects.destroy', $project))
+            ->assertRedirect(route('projects.index'));
+
+        $this->assertDatabaseMissing('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
+        ]);
+    }
+
+    /** @test */
     public function a_user_can_update_just_projects_notes()
     {
         $project = ProjectFactory::ownedBy($this->signIn())

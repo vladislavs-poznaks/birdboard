@@ -10,4 +10,12 @@
     <div class="px-4 text-gray-400">
         {{ $project->excerpt }}
     </div>
+    <div class="px-4 py-4 text-red-400 text-right text-sm">
+        <form action="{{ route('projects.destroy', $project) }}" method="POST">
+            @csrf
+            @method('DELETE')
+
+            <button type="submit">Delete</button>
+        </form>
+    </div>
 </div>
