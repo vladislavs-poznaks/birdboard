@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class Task extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordsActivity;
 
     protected $fillable = [
         'body', 'completed'
@@ -20,6 +21,8 @@ class Task extends Model
     protected $touches = [
         'project'
     ];
+
+    protected static $recordableEvents = ['created', 'deleted'];
 
     public function complete()
     {
@@ -36,18 +39,5 @@ class Task extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function recordActivity($description)
-    {
-        $this->activity()->create([
-            'project_id' => $this->project_id,
-            'description' => $description
-        ]);
-    }
-
-    public function activity()
-    {
-        return $this->morphMany(Activity::class, 'subject')->latest();
     }
 }
