@@ -1,3 +1,3 @@
 <div>
-    You marked a task as incomplete
+    {{ auth()->user()->is($activity->user) ? 'You' : $activity->user->name }} marked a task as incomplete
 </div>

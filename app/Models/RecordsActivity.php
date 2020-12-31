@@ -34,18 +34,18 @@ trait RecordsActivity
 
     protected function activityDescription($description): string
     {
-//        if (class_basename($this) !== 'Project') {
-//            $description = "{$description}_" . strtolower(class_basename($this));
-//        }
         return "{$description}_" . strtolower(class_basename($this));
     }
 
     public function recordActivity($description)
     {
+        $project = $this->project ?? $this;
+
         $this->activity()->create([
             'description' => $description,
             'changes' => $this->activityChanges(),
-            'project_id' => class_basename($this) === 'Project' ? $this->id : $this->project_id,
+            'user_id' => $project->owner->id,
+            'project_id' => $project->id,
         ]);
     }
 
