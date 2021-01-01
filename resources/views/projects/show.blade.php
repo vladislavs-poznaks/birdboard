@@ -24,21 +24,33 @@
                     >Edit Project</a>
                 </div>
                 <div class="flex items-center space-x-5">
-                    <img
-                        src="/images/avatar.jpeg"
-                        alt="avatar"
-                        class="w-10 rounded-full"
-                    >
-                    <img
-                        src="/images/avatar.jpeg"
-                        alt="avatar"
-                        class="w-10 rounded-full"
-                    >
-                    <img
-                        src="/images/avatar.jpeg"
-                        alt="avatar"
-                        class="w-10 rounded-full"
-                    >
+                    @foreach($project->members as $member)
+                        <img
+                            class="w-12 rounded-full"
+                            src="https://icotar.com/initials/{{ $member->name }}"
+                            alt="{{ $member->name }}"
+                        >
+                    @endforeach
+                        <img
+                            class="w-12 rounded-full"
+                            src="https://icotar.com/initials/{{ $project->owner->name }}"
+                            alt="{{ $project->owner->name }}"
+                        >
+{{--                    <img--}}
+{{--                        src="/images/avatar.jpeg"--}}
+{{--                        alt="avatar"--}}
+{{--                        class="w-10 rounded-full"--}}
+{{--                    >--}}
+{{--                    <img--}}
+{{--                        src="/images/avatar.jpeg"--}}
+{{--                        alt="avatar"--}}
+{{--                        class="w-10 rounded-full"--}}
+{{--                    >--}}
+{{--                    <img--}}
+{{--                        src="/images/avatar.jpeg"--}}
+{{--                        alt="avatar"--}}
+{{--                        class="w-10 rounded-full"--}}
+{{--                    >--}}
                     <a
                         href="{{ route('projects.create') }}"
                         class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
