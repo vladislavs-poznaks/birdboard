@@ -1,4 +1,4 @@
-<div class="h-56 bg-white rounded-lg shadow-lg space-y-3 py-6">
+<div class="h-56 bg-white rounded-lg shadow-lg space-y-3 py-6 flex flex-col">
     <div class="border-l-8 border-blue-300 text-lg">
         <a
             href="{{ route('projects.show', $project) }}"
@@ -7,7 +7,7 @@
             <h3 class="text-xl px-4 py-4">{{ $project->title }}</h3>
         </a>
     </div>
-    <div class="px-4 text-gray-400">
+    <div class="px-4 text-gray-400 flex-1">
         {{ $project->excerpt }}
     </div>
     <div class="px-4 py-4 text-red-400 text-right text-sm">

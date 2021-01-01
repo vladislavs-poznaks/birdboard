@@ -20,6 +20,11 @@ class ProjectPolicy
         //
     }
 
+    public function invite(User $user, Project $project)
+    {
+        return $project->owner->is($user);
+    }
+
     public function update(User $user, Project $project)
     {
         return $project->owner->is($user) || $project->members->contains($user);

@@ -31,26 +31,11 @@
                             alt="{{ $member->name }}"
                         >
                     @endforeach
-                        <img
-                            class="w-12 rounded-full"
-                            src="https://icotar.com/initials/{{ $project->owner->name }}"
-                            alt="{{ $project->owner->name }}"
-                        >
-{{--                    <img--}}
-{{--                        src="/images/avatar.jpeg"--}}
-{{--                        alt="avatar"--}}
-{{--                        class="w-10 rounded-full"--}}
-{{--                    >--}}
-{{--                    <img--}}
-{{--                        src="/images/avatar.jpeg"--}}
-{{--                        alt="avatar"--}}
-{{--                        class="w-10 rounded-full"--}}
-{{--                    >--}}
-{{--                    <img--}}
-{{--                        src="/images/avatar.jpeg"--}}
-{{--                        alt="avatar"--}}
-{{--                        class="w-10 rounded-full"--}}
-{{--                    >--}}
+                    <img
+                        class="w-12 rounded-full"
+                        src="https://icotar.com/initials/{{ $project->owner->name }}"
+                        alt="{{ $project->owner->name }}"
+                    >
                     <a
                         href="{{ route('projects.create') }}"
                         class="bg-blue-400 text-white rounded-lg shadow hover:bg-blue-500 px-4 py-2"
@@ -94,7 +79,8 @@
                                 >
                                     @method('PUT')
                                     @csrf
-                                    <input type="text" name="body" value="{{ $task->body }}" class="w-full {{ $task->completed ? 'text-gray-400' : '' }}">
+                                    <input type="text" name="body" value="{{ $task->body }}"
+                                           class="w-full {{ $task->completed ? 'text-gray-400' : '' }}">
                                     <input
                                         type="checkbox"
                                         name="completed"
@@ -127,9 +113,17 @@
 
                 </div>
 
-                <div class="w-1/3">
-                    <x-project-card :project="$project"/>
+                <div class="w-1/3 space-y-3">
+                    <div>
+                        <x-project-card :project="$project"/>
+                    </div>
+
+                    @can('invite', $project)
+                        <x-project-invite :project="$project"/>
+                    @endcan
                 </div>
+
+
             </div>
 
         </div>

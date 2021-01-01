@@ -10,7 +10,7 @@ class ProjectInvitationController extends Controller
 {
     public function store(InvitationsStoreRequest $request, Project $project)
     {
-        $this->authorize('update', $project);
+        $this->authorize('invite', $project);
 
         $user = User::whereEmail($request->email)->first();
         $project->invite($user);

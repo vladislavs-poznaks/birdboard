@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Project;
 use App\Models\User;
+use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -19,13 +20,35 @@ class InvitationsTest extends TestCase
 
         $userToInvite = User::factory()->create();
 
-        $this->actingAs(User::factory()->create())
+        $this->actingAs($user = User::factory()->create())
             ->post(route('invitations.store', $project), [
                 'email' => $userToInvite->email
             ])
             ->assertStatus(403);
 
         $this->assertFalse($project->members->contains($userToInvite));
+    }
+
+    /** @test */
+    public function project_members_can_not_invite_other_users()
+    {
+        $john = User::factory()->create();
+
+        $project = ProjectFactory::ownedBy($john)->create();
+
+        $sally = User::factory()->create();
+        $nick = User::factory()->create();
+
+        $project->invite($sally);
+
+        $this->actingAs($sally)
+            ->post(route('invitations.store', $project), [
+                'email' => $nick->email
+            ])
+            ->assertStatus(403);
+
+        $this->assertTrue($project->members->contains($sally));
+        $this->assertFalse($project->members->contains($nick));
     }
 
     /** @test */

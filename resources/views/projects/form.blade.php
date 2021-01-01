@@ -7,8 +7,9 @@
             class="input bg-transparent border border-grey-light rounded p-2 text-xs w-full"
             name="title"
             value="{{ $project->title ?? '' }}"
-            placeholder="My next awesome project">
-        required
+            placeholder="My next awesome project"
+            required
+        >
     </div>
     @error('title')
     <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
