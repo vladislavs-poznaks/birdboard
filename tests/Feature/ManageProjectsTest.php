@@ -35,22 +35,19 @@ class ManageProjectsTest extends TestCase
 
         $this->get('/projects/create')->assertStatus(200);
 
-        $this->post('/projects', [
+        $this->followingRedirects()->post('/projects', [
             'title' => 'Test Title',
             'description' => 'Test Description',
             'notes' => 'General notes here.'
         ])
-            ->assertRedirect(route('projects.show', Project::first()));
+            ->assertSee('Test Title')
+            ->assertSee('General notes here.');
 
         $this->assertDatabaseHas('projects', [
             'title' => 'Test Title',
             'description' => 'Test Description',
             'notes' => 'General notes here.'
         ]);
-
-        $this->get(route('projects.show', Project::first()))
-            ->assertSee('Test Title')
-            ->assertSee('General notes here.');
     }
 
     /** @test */
@@ -108,6 +105,23 @@ class ManageProjectsTest extends TestCase
         $project = Project::factory()->create();
 
         $this->actingAs($this->signIn())->delete(route('projects.destroy', $project))
+            ->assertStatus(403);
+
+        $this->assertDatabaseHas('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
+        ]);
+    }
+
+    /** @test */
+    public function a_member_cannot_delete_a_project_of_others()
+    {
+        $project = Project::factory()->create();
+
+        $member = $this->signIn();
+        $project->invite($member);
+
+        $this->delete(route('projects.destroy', $project))
             ->assertStatus(403);
 
         $this->assertDatabaseHas('projects', [
