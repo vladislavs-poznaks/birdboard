@@ -22,7 +22,7 @@
                 @endforelse
             </div>
         </div>
-        <div class="w-full lg:w-1/4 bg-gray-200 pl-4 pr-10 py-6 h-screen">
+        <div class="w-full lg:w-1/4 bg-gray-200 pl-4 pr-10 py-6 h-screen dark:bg-gray-900">
             Latest Updates
         </div>
 

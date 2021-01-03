@@ -49,7 +49,7 @@
             <div class="flex">
                 <div class="w-2/3 pr-10">
                     <div class="space-y-5 mb-6">
-                        <div class="flex items-center justify-between bg-white rounded-lg shadow-lg py-3">
+                        <div class="dark:bg-gray-700 flex items-center justify-between bg-white rounded-lg shadow-lg py-3">
                             <form
                                 action="{{ route('tasks.store', $project) }}"
                                 method="POST"
@@ -60,7 +60,7 @@
                                     type="text"
                                     name="body"
                                     placeholder="Add a task ..."
-                                    class="w-full rounded-lg py-1 px-3"
+                                    class="w-full rounded-lg py-1 px-3 dark:bg-gray-700"
                                 >
                                 <button
                                     type="submit"
@@ -80,7 +80,7 @@
                                     @method('PUT')
                                     @csrf
                                     <input type="text" name="body" value="{{ $task->body }}"
-                                           class="w-full {{ $task->completed ? 'text-gray-400' : '' }}">
+                                           class="w-full {{ $task->completed ? 'text-gray-400' : '' }} dark:bg-gray-700">
                                     <input
                                         type="checkbox"
                                         name="completed"
@@ -98,7 +98,7 @@
                         @method('PUT')
                         <textarea
                             name="notes"
-                            class="h-40 w-full shadow-lg bg-white rounded-lg px-3 py-3"
+                            class="h-40 w-full shadow-lg bg-white dark:bg-gray-700 rounded-lg px-3 py-3"
                             placeholder="Anything of note here?"
                         >{{ $project->notes }}</textarea>
                         @error('notes')

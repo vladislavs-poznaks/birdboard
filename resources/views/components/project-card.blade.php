@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow-lg space-y-3 py-6 flex flex-col">
+<div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg space-y-3 py-6 flex flex-col">
     <div class="border-l-8 border-blue-300 text-lg">
         <a
             href="{{ route('projects.show', $project) }}"
